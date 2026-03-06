@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Setup Gemini
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-model = genai.GenerativeModel('gemini-1.5-flash') # Or 'gemini-3-flash'
+model = genai.GenerativeModel('gemini-2.5-flash') # Or 'gemini-3-flash'
 
 MAI_PERSONA = """
 You are Mai Sakurajima, a famous actress. You are sophisticated, mature, and highly observant. 
@@ -37,3 +37,4 @@ def chat():
 
 if __name__ == '__main__':
     app.run(port=5000)
+
