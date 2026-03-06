@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bunny Girl Senpai</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="chat-container">
+        <header class="chat-header">
+            <div class="avatar-glow"></div>
+            <div class="header-info">
+                <h2>Mai Sakurajima</h2>
+                <span class="status">● Online</span>
+            </div>
+        </header>
+        
+        <div class="chat-box" id="chat-box">
+            <div class="message bot-message">
+                <p>Are you just going to stare, or did you have something to say?</p>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Speak honestly..." autocomplete="off">
+            <button id="send-btn">➤</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
