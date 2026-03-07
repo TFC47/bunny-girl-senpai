@@ -150,58 +150,71 @@ sendBtn.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
 // --- BUNNY LOCK 1.0 LOGIC ---
+
 const lockScreen = document.getElementById('bunny-lock-screen');
 const lockInput = document.getElementById('lock-input');
 const lockMsg = document.getElementById('lock-msg');
+const unlockBtn = document.getElementById('unlock-btn'); // <-- We grab the new button here
 
 const PASSKEY = "URCUTE"; 
 let failedAttempts = 0;
 const MAX_ATTEMPTS = 3;
 
+// We wrap your exact logic inside this function
+function attemptUnlock() {
+    const attempt = lockInput.value.toUpperCase();
+    
+    if (attempt === PASSKEY) {
+        // Access Granted
+        lockMsg.innerText = "ACCESS GRANTED. WELCOME.";
+        lockMsg.style.color = "var(--neon-sky-blue)";
+        lockInput.style.borderBottomColor = "var(--neon-sky-blue)";
+        
+        setTimeout(() => {
+            lockScreen.classList.add('unlocked');
+            document.body.classList.remove('locked');
+        }, 800);
+        
+    } else {
+        // Access Denied & Strike Counter
+        failedAttempts++;
+        lockInput.value = '';
+        
+        if (failedAttempts >= MAX_ATTEMPTS) {
+            // The 3-Strike Redirect Penalty
+            lockMsg.innerText = "CRITICAL FAILURE. INITIATING LOCKOUT.";
+            lockMsg.style.color = "#ff3366";
+            lockInput.style.borderBottomColor = "#ff3366";
+            lockInput.disabled = true; // Disables the input box
+            
+            setTimeout(() => {
+                // Redirects them to a 404 or a dummy page of your choice
+                window.location.href = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXducDJ4cHI0M2h2Y2EwNGJ6MmFiczlxcnNjbThzdjF2eDlxZ3ljMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SDeVLvFCqFsSA/giphy.gif"; 
+            }, 1500);
+            return;
+        }
+        
+        // Warning before final strike
+        lockMsg.innerText = `ACCESS DENIED. ${MAX_ATTEMPTS - failedAttempts} ATTEMPTS REMAINING.`;
+        lockMsg.style.color = "#ff3366"; 
+        lockInput.style.borderBottomColor = "#ff3366";
+        
+        setTimeout(() => {
+            lockMsg.innerText = "SYSTEM ENCRYPTED. ENTER PASSKEY.";
+            lockMsg.style.color = "var(--cool-gray)";
+            lockInput.style.borderBottomColor = "var(--bunny-purple)";
+        }, 1500);
+    }
+}
+
+// 1. Desktop: Triggers when they press 'Enter'
 lockInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-        const attempt = lockInput.value.toUpperCase();
-        
-        if (attempt === PASSKEY) {
-            // Access Granted
-            lockMsg.innerText = "ACCESS GRANTED. WELCOME.";
-            lockMsg.style.color = "var(--neon-sky-blue)";
-            lockInput.style.borderBottomColor = "var(--neon-sky-blue)";
-            
-            setTimeout(() => {
-                lockScreen.classList.add('unlocked');
-                document.body.classList.remove('locked');
-            }, 800);
-            
-        } else {
-            // Access Denied & Strike Counter
-            failedAttempts++;
-            lockInput.value = '';
-            
-            if (failedAttempts >= MAX_ATTEMPTS) {
-                // The 3-Strike Redirect Penalty
-                lockMsg.innerText = "CRITICAL FAILURE. INITIATING LOCKOUT.";
-                lockMsg.style.color = "#ff3366";
-                lockInput.style.borderBottomColor = "#ff3366";
-                lockInput.disabled = true; // Disables the input box
-                
-                setTimeout(() => {
-                    // Redirects them to a 404 or a dummy page of your choice
-                    window.location.href = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXducDJ4cHI0M2h2Y2EwNGJ6MmFiczlxcnNjbThzdjF2eDlxZ3ljMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SDeVLvFCqFsSA/giphy.gif"; 
-                }, 1500);
-                return;
-            }
-            
-            // Warning before final strike
-            lockMsg.innerText = `ACCESS DENIED. ${MAX_ATTEMPTS - failedAttempts} ATTEMPTS REMAINING.`;
-            lockMsg.style.color = "#ff3366"; 
-            lockInput.style.borderBottomColor = "#ff3366";
-            
-            setTimeout(() => {
-                lockMsg.innerText = "SYSTEM ENCRYPTED. ENTER PASSKEY.";
-                lockMsg.style.color = "var(--cool-gray)";
-                lockInput.style.borderBottomColor = "var(--bunny-purple)";
-            }, 1500);
-        }
+        attemptUnlock();
     }
+});
+
+// 2. Mobile: Triggers when they tap the new 'ACCESS' button
+unlockBtn.addEventListener('click', () => {
+    attemptUnlock();
 });
