@@ -1,83 +1,118 @@
-// --- 1. Canvas Particle Network Animation ---
-const canvas = document.getElementById('particle-canvas');
+const introImg = document.getElementById('parallax-img');
+
+// --- 1. Neon Sky Blue Snow Animation ---
+const canvas = document.getElementById('atmosphere-canvas');
 const ctx = canvas.getContext('2d');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let particlesArray = [];
-const mouse = { x: null, y: null, radius: 100 };
+let snowflakes = [];
+const snowColors = ['#3DA9FC', '#6EA8FF', '#E6EAF2']; // Neon Sky Blue, Glow, Soft White
 
-window.addEventListener('mousemove', function(event) {
-    mouse.x = event.x;
-    mouse.y = event.y;
-});
-
-class Particle {
-    constructor(x, y, directionX, directionY, size, color) {
-        this.x = x;
-        this.y = y;
-        this.directionX = directionX;
-        this.directionY = directionY;
-        this.size = size;
-        this.color = color;
+class Snowflake {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedY = Math.random() * 1.5 + 0.5; 
+        this.angle = Math.random() * Math.PI * 2;
+        this.spin = (Math.random() - 0.5) * 0.05;
+        this.color = snowColors[Math.floor(Math.random() * snowColors.length)];
+        this.opacity = Math.random() * 0.6 + 0.2;
     }
+    
+    update() {
+        this.y += this.speedY;
+        this.angle += this.spin;
+        this.x += Math.sin(this.angle) * 0.5; // Natural drifting sway
+        
+        // Reset to top when it falls off screen
+        if (this.y > canvas.height) {
+            this.y = -5;
+            this.x = Math.random() * canvas.width;
+        }
+    }
+    
     draw() {
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.hexToRgba(this.color, this.opacity);
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color;
         ctx.fill();
     }
-    update() {
-        if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-        if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-        this.x += this.directionX;
-        this.y += this.directionY;
-        this.draw();
+
+    hexToRgba(hex, alpha) {
+        let r = parseInt(hex.slice(1, 3), 16),
+            g = parseInt(hex.slice(3, 5), 16),
+            b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
 }
 
-function initCanvas() {
-    particlesArray = [];
-    let numberOfParticles = (canvas.height * canvas.width) / 9000;
-    for (let i = 0; i < numberOfParticles; i++) {
-        let size = (Math.random() * 2) + 1;
-        let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-        let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-        let directionX = (Math.random() * 1) - 0.5;
-        let directionY = (Math.random() * 1) - 0.5;
-        let color = 'rgb(0, 255, 255)';
-        particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+function initSnow() {
+    snowflakes = [];
+    const numberOfFlakes = (canvas.width * canvas.height) / 7000;
+    for (let i = 0; i < numberOfFlakes; i++) {
+        snowflakes.push(new Snowflake());
     }
 }
 
-function animateCanvas() {
-    requestAnimationFrame(animateCanvas);
-    ctx.clearRect(0, 0, innerWidth, innerHeight);
-    for (let i = 0; i < particlesArray.length; i++) {
-        particlesArray[i].update();
+function animateSnow() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < snowflakes.length; i++) {
+        snowflakes[i].update();
+        snowflakes[i].draw();
     }
+    requestAnimationFrame(animateSnow);
 }
 
-window.addEventListener('resize', function() {
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-    initCanvas();
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initSnow();
 });
 
-initCanvas();
-animateCanvas();
+initSnow();
+animateSnow();
 
-// --- 2. Chatbot Logic ---
+// --- (Keep your existing Snow Animation Code here) ---
+
+// --- 2. Cranked Up Parallax Effect ---
+
+const title = document.getElementById('parallax-title');
+const quote = document.getElementById('parallax-quote');
+const chat = document.getElementById('parallax-chat');
+const backgroundCanvas = document.getElementById('atmosphere-canvas');
+
+document.addEventListener("mousemove", (e) => {
+    // We use a much smaller divisor (15 instead of 40) for a highly sensitive shift
+    const xAxis = (window.innerWidth / 2 - e.pageX) / 15;
+    const yAxis = (window.innerHeight / 2 - e.pageY) / 15;
+    
+    // Different multiplier for each element creates deep 3D separation
+    title.style.transform = `translate(${xAxis * 1.5}px, ${yAxis * 1.5}px)`;
+    quote.style.transform = `translate(${xAxis * 0.8}px, ${yAxis * 0.8}px)`;
+    chat.style.transform = `translate(${xAxis * 0.5}px, ${yAxis * 0.5}px)`;
+    introImg.style.transform = `translate(${xAxis * 2}px, ${yAxis * 2}px)`;    
+    // Move the canvas aggressively in the opposite direction
+    backgroundCanvas.style.transform = `translate(${-xAxis * 1.2}px, ${-yAxis * 1.2}px) scale(1.15)`;
+
+});
+
+// --- (Keep your existing Chat Logic Code here) ---
+
+// --- 3. Chat Logic ---
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 
 function appendMessage(text, sender) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
-    messageDiv.innerHTML = `<p>${text}</p>`;
-    chatBox.appendChild(messageDiv);
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+    msgDiv.innerHTML = `<p>${text}</p>`;
+    chatBox.appendChild(msgDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
@@ -85,11 +120,9 @@ async function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
 
-    // Show user message
     appendMessage(text, 'user');
     userInput.value = '';
 
-    // Add a temporary typing indicator
     const typingDiv = document.createElement('div');
     typingDiv.classList.add('message', 'bot-message');
     typingDiv.id = 'typing-indicator';
@@ -98,32 +131,77 @@ async function sendMessage() {
     chatBox.scrollTop = chatBox.scrollHeight;
 
     try {
-        // Fetch to our Vercel Serverless Function
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text })
         });
-
         const data = await response.json();
         
-        // Remove typing indicator and show response
         document.getElementById('typing-indicator').remove();
-        
-        if (data.reply) {
-            appendMessage(data.reply, 'bot');
-        } else {
-            appendMessage(data.error || "An error occurred.", 'bot');
-        }
-
+        appendMessage(data.reply || data.error, 'bot');
     } catch (error) {
         document.getElementById('typing-indicator').remove();
-        appendMessage("Connection lost. It seems my signal isn't reaching you.", 'bot');
-        console.error("Fetch error:", error);
+        appendMessage("Signal lost. Are you even trying to reach me?", 'bot');
     }
 }
 
 sendBtn.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
+userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+// --- BUNNY LOCK 1.0 LOGIC ---
+const lockScreen = document.getElementById('bunny-lock-screen');
+const lockInput = document.getElementById('lock-input');
+const lockMsg = document.getElementById('lock-msg');
+
+const PASSKEY = "URCUTE"; 
+let failedAttempts = 0;
+const MAX_ATTEMPTS = 3;
+
+lockInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const attempt = lockInput.value.toUpperCase();
+        
+        if (attempt === PASSKEY) {
+            // Access Granted
+            lockMsg.innerText = "ACCESS GRANTED. WELCOME.";
+            lockMsg.style.color = "var(--neon-sky-blue)";
+            lockInput.style.borderBottomColor = "var(--neon-sky-blue)";
+            
+            setTimeout(() => {
+                lockScreen.classList.add('unlocked');
+                document.body.classList.remove('locked');
+            }, 800);
+            
+        } else {
+            // Access Denied & Strike Counter
+            failedAttempts++;
+            lockInput.value = '';
+            
+            if (failedAttempts >= MAX_ATTEMPTS) {
+                // The 3-Strike Redirect Penalty
+                lockMsg.innerText = "CRITICAL FAILURE. INITIATING LOCKOUT.";
+                lockMsg.style.color = "#ff3366";
+                lockInput.style.borderBottomColor = "#ff3366";
+                lockInput.disabled = true; // Disables the input box
+                
+                setTimeout(() => {
+                    // Redirects them to a 404 or a dummy page of your choice
+                    window.location.href = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXducDJ4cHI0M2h2Y2EwNGJ6MmFiczlxcnNjbThzdjF2eDlxZ3ljMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SDeVLvFCqFsSA/giphy.gif"; 
+                }, 1500);
+                return;
+            }
+            
+            // Warning before final strike
+            lockMsg.innerText = `ACCESS DENIED. ${MAX_ATTEMPTS - failedAttempts} ATTEMPTS REMAINING.`;
+            lockMsg.style.color = "#ff3366"; 
+            lockInput.style.borderBottomColor = "#ff3366";
+            
+            setTimeout(() => {
+                lockMsg.innerText = "SYSTEM ENCRYPTED. ENTER PASSKEY.";
+                lockMsg.style.color = "var(--cool-gray)";
+                lockInput.style.borderBottomColor = "var(--bunny-purple)";
+            }, 1500);
+        }
+    }
 });
