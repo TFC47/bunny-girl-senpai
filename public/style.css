@@ -132,16 +132,21 @@ body {
 }
 
 .chat-container {
-    width: 100%;
-    max-width: 600px; 
-    height: 600px;
+    width: 95%;
+    max-width: 800px; 
+    height: 65vh;
+    postition: relative;
+    margin-top: 120px; 
+    margin-bottom: 120px; 
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 10;
     /* The Image Background */
     background-image: url('pics\\14.jfif');
     background-size: cover;
     background-position: center;
     background-color: rgba(54, 72, 121, 0.85); /* Deep Night with high opacity */
     background-blend-mode: overlay; /* Blends the image with the dark color */
-    
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(124, 92, 255, 0.4);
@@ -383,3 +388,27 @@ body.locked {
 .terminal-footer p {
     margin: 5px 0;
 }
+
+
+/* BUNNY LOCK Access Button Redesign */
+#unlock-btn {
+    background: transparent;
+    color: #00ffff; 
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    padding: 8px 24px;
+    font-family: inherit; /* Keeps your terminal font */
+    font-size: 14px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
+}
+
+#unlock-btn:hover, #unlock-btn:active {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    text-shadow: 0 0 8px #00ffff;
+}
+
