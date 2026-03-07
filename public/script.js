@@ -76,36 +76,7 @@ initSnow();
 animateSnow();
 
 
-// --- 2. Cranked Up Parallax Effect ---
-
-// Grouped all DOM elements together
-const title = document.getElementById('parallax-title');
-const quote = document.getElementById('parallax-quote');
-const chat = document.getElementById('parallax-chat');
-const backgroundCanvas = document.getElementById('atmosphere-canvas');
-const introImg = document.getElementById('parallax-img');
-const galleryItems = document.querySelectorAll('.gallery-item'); // Grab all gallery images
-
-document.addEventListener("mousemove", (e) => {
-    // We use a much smaller divisor (15 instead of 40) for a highly sensitive shift
-    const xAxis = (window.innerWidth / 2 - e.pageX) / 15;
-    const yAxis = (window.innerHeight / 2 - e.pageY) / 15;
-    
-    // Different multiplier for each element creates deep 3D separation
-    if(title) title.style.transform = `translate(${xAxis * 1.5}px, ${yAxis * 1.5}px)`;
-    if(quote) quote.style.transform = `translate(${xAxis * 0.8}px, ${yAxis * 0.8}px)`;
-    if(chat) chat.style.transform = `translate(${xAxis * 0.5}px, ${yAxis * 0.5}px)`;
-    if(introImg) introImg.style.transform = `translate(${xAxis * 2}px, ${yAxis * 2}px)`;    
-    if(backgroundCanvas) backgroundCanvas.style.transform = `translate(${-xAxis * 1.2}px, ${-yAxis * 1.2}px) scale(1.15)`;
-
-    // Apply 3D Window Parallax to ALL Gallery Images
-    galleryItems.forEach(item => {
-        item.style.backgroundPosition = `calc(50% + ${xAxis * 0.8}px) calc(50% + ${yAxis * 0.8}px)`;
-    });
-});
-
-
-// --- 3. Chat Logic ---
+// --- 2. Chat Logic ---
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
@@ -152,8 +123,7 @@ sendBtn.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
 
-// --- BUNNY LOCK 1.0 LOGIC ---
-
+// --- 3. BUNNY LOCK 1.0 LOGIC ---
 const lockScreen = document.getElementById('bunny-lock-screen');
 const lockInput = document.getElementById('lock-input');
 const lockMsg = document.getElementById('lock-msg');
