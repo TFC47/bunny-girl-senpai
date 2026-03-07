@@ -1,153 +1,385 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+:root {
+    --deep-night: #0B0F1A;
+    --midnight-blue: #141C2F;
+    --bunny-purple: #7C5CFF;
+    --neon-sky-blue: #3DA9FC;
+    --soft-white: #E6EAF2;
+    --cool-gray: #AAB3C5;
+    --neon-glow: #6EA8FF;
 }
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 
 body {
-    background-color: #050505;
-    color: #ffffff;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    background-color: var(--deep-night);
+    color: var(--soft-white);
+    overflow-x: hidden; /* Allow vertical scroll, block horizontal */
 }
 
-#particle-canvas {
-    position: absolute;
+/* Canvas is now fixed to the background */
+#atmosphere-canvas {
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     z-index: 0;
+    will-change: transform;
+    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: scale(1.1); /* Prevent edge clipping during extreme parallax */
+}
+
+.scroll-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    gap: 100px; /* Massive spacing between sections */
+}
+
+/* --- Typography & Intro --- */
+.hero-section {
+    text-align: center;
+    margin-top: 10vh;
+    width: 100%;
+}
+
+.title-container h1 {
+    font-size: 5rem; /* Massive text */
+    font-weight: 700;
+    text-shadow: 0 0 25px rgba(124, 92, 255, 0.5);
+    letter-spacing: 3px;
+    will-change: transform;
+}
+
+.subtitle {
+    font-size: 1.8rem;
+    color: var(--neon-sky-blue);
+    margin-bottom: 40px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+}
+
+.quote-box {
+    background: rgba(20, 28, 47, 0.6);
+    border-left: 4px solid var(--bunny-purple);
+    padding: 25px;
+    margin: 0 auto;
+    border-radius: 0 12px 12px 0;
+    font-style: italic;
+    color: var(--cool-gray);
+    max-width: 700px;
+    backdrop-filter: blur(10px);
+    will-change: transform;
+}
+
+/* --- Gallery --- */
+.gallery-section { width: 100%; max-width: 1200px; margin: 0 auto; }
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Auto-scales images */
+    gap: 40px; /* Bigger gaps for a premium look */
+    width: 100%;
+}
+
+.gallery-item {
+    width: 100%;
+    height: 450px; /* Much taller, cinematic size */
+    background-color: var(--midnight-blue);
+    border-radius: 16px;
+    border: 1px solid rgba(61, 169, 252, 0.2);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    background-size: cover;
+    background-position: center; /* We will manipulate this with JS next! */
+}
+
+.gallery-item:hover {
+    transform: translateY(-15px);
+    border-color: var(--neon-sky-blue);
+    box-shadow: 0 15px 35px rgba(61, 169, 252, 0.4);
+}
+
+.overlay-text {
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    background: rgba(11, 15, 26, 0.9);
+    padding: 15px 0;
+    transition: bottom 0.4s ease;
+    font-weight: bold;
+    color: var(--neon-glow);
+}
+
+.gallery-item:hover .overlay-text { bottom: 0; }
+
+/* --- Chat Interface --- */
+.chat-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10vh;
 }
 
 .chat-container {
-    position: relative;
-    z-index: 1;
-    width: 400px;
+    width: 100%;
+    max-width: 600px; 
     height: 600px;
-    background: rgba(10, 10, 12, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgb(0, 255, 255);
-    border-radius: 16px;
+    /* The Image Background */
+    background-image: url('pics\\14.jfif');
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(54, 72, 121, 0.85); /* Deep Night with high opacity */
+    background-blend-mode: overlay; /* Blends the image with the dark color */
+    
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(124, 92, 255, 0.4);
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 30px rgb(0, 255, 255);
+    box-shadow: 0 0 50px rgba(11, 15, 26, 0.9);
+    will-change: transform;
 }
 
-.chat-header {
-    padding: 20px;
-    border-bottom: 1px solid rgb(0, 255, 255);
+/* (Keep your existing chat-header, chat-box, message, input-container CSS from the previous step exactly the same) */
+.chat-header { padding: 25px; border-bottom: 1px solid rgba(124, 92, 255, 0.2); display: flex; align-items: center; gap: 15px; }
+.avatar-glow { width: 45px; height: 45px; border-radius: 50%; background: var(--bunny-purple); box-shadow: 0 0 20px var(--bunny-purple); }
+.header-info h2 { font-size: 1.2rem; }
+.status { font-size: 0.85rem; color: var(--neon-sky-blue); text-shadow: 0 0 8px var(--neon-sky-blue); }
+.chat-box { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+.chat-box::-webkit-scrollbar { width: 6px; }
+.chat-box::-webkit-scrollbar-thumb { background: rgba(124, 92, 255, 0.5); border-radius: 10px; }
+.message { max-width: 80%; padding: 14px 18px; border-radius: 14px; font-size: 0.95rem; line-height: 1.5; }
+.bot-message { align-self: flex-start; background: var(--deep-night); border-left: 3px solid var(--bunny-purple); border-bottom-left-radius: 4px; color: var(--soft-white); }
+.user-message { align-self: flex-end; background: rgba(124, 92, 255, 0.15); border-right: 3px solid var(--neon-sky-blue); border-bottom-right-radius: 4px; color: var(--soft-white); }
+.input-container { padding: 25px; display: flex; gap: 12px; border-top: 1px solid rgba(124, 92, 255, 0.2); }
+input { flex: 1; background: rgba(11, 15, 26, 0.7); border: 1px solid rgba(170, 179, 197, 0.2); border-radius: 10px; padding: 15px; color: var(--soft-white); outline: none; transition: all 0.3s ease; }
+input:focus { border-color: var(--bunny-purple); box-shadow: 0 0 15px rgba(124, 92, 255, 0.3); }
+button { background: var(--bunny-purple); color: var(--soft-white); border: none; border-radius: 10px; padding: 0 22px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s ease; }
+button:hover { background: var(--neon-sky-blue); box-shadow: 0 0 20px rgba(61, 169, 252, 0.5); transform: scale(1.05); }
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+    .title-container h1 { font-size: 3rem; }
+    .subtitle { font-size: 1.2rem; }
+    .quote-box { font-size: 0.9rem; padding: 15px; }
+    .gallery-item { width: 100%; max-width: 320px; height: 300px; }
+    .chat-container { height: 500px; border-radius: 16px; }
+    .scroll-container { gap: 60px; padding: 40px 15px; }
+}
+
+
+/* --- Banner & Intro Profile --- */
+.top-banner {
+    width: 100vw;
+    height: 300px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    background-size: cover;
+    background-position: center;
+    margin-top: -10px; /* Pulls it to the absolute top */
+    border-bottom: 2px solid var(--bunny-purple);
+}
+
+.banner-overlay {
+    width: 100%;
+    height: 100%;
+}
+
+.intro-profile-img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--neon-sky-blue);
+    box-shadow: 0 0 30px rgba(61, 169, 252, 0.5);
+    margin-bottom: 20px;
+    will-change: transform;
+}
+
+/* --- Instructions Section --- */
+.instructions-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.terminal-instructions {
+    background: rgba(20, 28, 47, 0.8);
+    border: 1px solid var(--neon-sky-blue);
+    padding: 20px 40px;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--soft-white);
+}
+
+.terminal-instructions h3 {
+    color: var(--neon-sky-blue);
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.terminal-instructions p { margin: 5px 0; font-size: 0.9rem; }
+
+/* --- Creator Profile --- */
+.creator-profile {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.creator-card {
     display: flex;
     align-items: center;
-    gap: 15px;
-}
-
-.avatar-glow {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #00FFFF;
-    box-shadow: 0 0 15px #00FFFF;
-}
-
-.header-info h2 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-}
-
-.status {
-    font-size: 0.8rem;
-    color: #00FFFF;
-    text-shadow: 0 0 5px #00FFFF;
-}
-
-.chat-box {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* Custom Scrollbar */
-.chat-box::-webkit-scrollbar {
-    width: 6px;
-}
-.chat-box::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 255);
-    border-radius: 10px;
-}
-
-.message {
-    max-width: 80%;
-    padding: 12px 16px;
+    gap: 20px;
+    background: rgba(11, 15, 26, 0.9);
+    border-left: 5px solid var(--bunny-purple);
+    padding: 20px 40px;
     border-radius: 12px;
-    font-size: 0.95rem;
-    line-height: 1.4;
-    animation: fadeIn 0.3s ease-out;
+    box-shadow: 0 10px 30px rgba(124, 92, 255, 0.2);
+    transition: all 0.3s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.creator-card:hover {
+    border-left: 5px solid var(--neon-sky-blue);
+    transform: scale(1.02);
 }
 
-.bot-message {
-    align-self: flex-start;
-    background: rgba(255, 255, 255, 0.05);
-    border-left: 3px solid #00FFFF;
-    border-bottom-left-radius: 2px;
+.creator-img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid var(--bunny-purple);
 }
 
-.user-message {
-    align-self: flex-end;
-    background: #ff6ff6;
-    border-right: 3px solid #00FFFF;
-    border-bottom-right-radius: 2px;
+.creator-info h4 { font-size: 1.8rem; color: var(--cool-gray); text-transform: uppercase; letter-spacing: 2px; }
+.creator-info h2 { font-size: 2.5rem; color: var(--soft-white); text-shadow: 0 0 10px var(--bunny-purple); }
+.creator-info p { font-size: 1.9rem; color: var(--neon-sky-blue); margin-top: 5px; }
+
+/* --- BUNNY LOCK 1.0 SYSTEM --- */
+body.locked {
+    overflow: hidden; /* Stops scrolling while locked */
 }
 
-.input-container {
-    padding: 20px;
+#bunny-lock-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--deep-night);
+    z-index: 9999; /* Keeps it on top of EVERYTHING */
     display: flex;
-    gap: 10px;
-    border-top: 1px solid rgb(0, 255, 255);
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+    backdrop-filter: blur(20px);
 }
 
-input {
-    flex: 1;
-    background: rgb(0, 0, 0);
-    border: 1px solid rgb(0, 255, 255);
-    border-radius: 8px;
-    padding: 12px;
-    color: #fff;
-    outline: none;
-    transition: all 0.3s ease;
+.lock-terminal {
+    text-align: center;
+    border: 1px solid var(--bunny-purple);
+    padding: 50px;
+    background: rgba(20, 28, 47, 0.8);
+    border-radius: 16px;
+    box-shadow: 0 0 50px rgba(124, 92, 255, 0.3);
 }
 
-input:focus {
-    border-color: #00FFFF;
-    box-shadow: 0 0 10px rgb(0, 255, 255);
+.lock-title {
+    color: var(--neon-sky-blue);
+    font-size: 2.5rem;
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 15px var(--neon-sky-blue);
 }
 
-button {
-    background: #00FFFF;
-    color: black;
+.lock-status {
+    color: var(--cool-gray);
+    font-size: 1rem;
+    margin-bottom: 40px;
+    letter-spacing: 3px;
+    transition: color 0.3s ease;
+}
+
+#lock-input {
+    background: transparent;
     border: none;
-    border-radius: 8px;
-    padding: 0 20px;
-    cursor: pointer;
-    font-size: 1.2rem;
+    border-bottom: 2px solid var(--bunny-purple);
+    color: var(--soft-white);
+    font-size: 2rem;
+    text-align: center;
+    outline: none;
+    width: 250px;
+    padding: 10px;
+    letter-spacing: 15px; /* Spaces out the password dots */
     transition: all 0.3s ease;
 }
 
-button:hover {
-    background: #ff6ff6;
-    box-shadow: 0 0 15px #00FFFF;
+#lock-input:focus {
+    border-bottom-color: var(--neon-sky-blue);
+    box-shadow: 0 10px 15px -10px rgba(61, 169, 252, 0.5);
+}
+
+/* The class JS will add when the password is correct */
+.unlocked {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* --- Portfolio Button --- */
+.portfolio-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--neon-sky-blue);
+    color: var(--neon-sky-blue);
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.portfolio-btn:hover {
+    background: var(--neon-sky-blue);
+    color: var(--deep-night);
+    box-shadow: 0 0 15px rgba(61, 169, 252, 0.6);
+}
+
+/* --- Terminal Footer --- */
+.terminal-footer {
+    width: 100%;
+    text-align: center;
+    padding: 30px;
+    background: rgba(11, 15, 26, 0.95);
+    border-top: 1px solid rgba(124, 92, 255, 0.2);
+    color: var(--cool-gray);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1; /* Keeps it above the canvas */
+}
+
+.terminal-footer p {
+    margin: 5px 0;
 }
