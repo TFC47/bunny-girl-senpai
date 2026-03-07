@@ -142,10 +142,10 @@ body {
     margin-right: auto;
     z-index: 10;
     /* The Image Background */
-    background-image: url('pics\\14.jfif');
+    background-image: url('pics\\19.jfif');
     background-size: cover;
     background-position: center;
-    background-color: rgba(54, 72, 121, 0.85); /* Deep Night with high opacity */
+    background-color: rgba(11, 15, 26, 0.85); /* Deep Night with high opacity */
     background-blend-mode: overlay; /* Blends the image with the dark color */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -411,4 +411,5 @@ body.locked {
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
     text-shadow: 0 0 8px #00ffff;
 }
+
 
