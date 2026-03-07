@@ -47,15 +47,13 @@ body {
     left: 50%;
     transform: translateX(-50%);
     background-size: cover;
-    background-position: center;
-    margin-top: -10px; 
-    border-bottom: 1px solid rgba(124, 92, 255, 0.4); /* Softer border */
+    background-position: center; 
+    border-bottom: 1px solid #7C5CFF; /* Softer border */
 }
 
 .banner-overlay {
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, transparent, var(--deep-night));
 }
 
 .intro-profile-img {
@@ -370,3 +368,4 @@ body.locked { overflow: hidden; }
     .creator-img { width: 140px; height: 140px; }
     .creator-info h2 { font-size: 2rem; }
 }
+
