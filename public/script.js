@@ -129,7 +129,7 @@ const lockInput = document.getElementById('lock-input');
 const lockMsg = document.getElementById('lock-msg');
 const unlockBtn = document.getElementById('unlock-btn'); 
 
-const PASSKEY = "URCUTE"; 
+const PASSKEY = "cutebunny"; 
 let failedAttempts = 0;
 const MAX_ATTEMPTS = 3;
 
@@ -190,3 +190,4 @@ lockInput.addEventListener('keypress', (e) => {
 unlockBtn.addEventListener('click', () => {
     attemptUnlock();
 });
+
